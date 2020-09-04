@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Compliments</title>
-    </head>
-    <body>
-        <h1>Hello, nice to meet you!</h1>
-        <form action="/compliments_results" method="GET">
-            <fieldset>
-                <legend>Your Info:</legend>
+{% extends "home.html" %}
+{% block content %}
 
-                <label for="users_name">What is your name?</label>
-                <input type="text" name="users_name" id="users_name">
-                <br><br>
+<h1>Hello</h1>
+<form action="/compliments_results" method="GET">
+  <fieldset>
+    <label for="users_name">What is your name?</label>
+    <input type="text" name="users_name" id="users_name"/>
+    <br/><br/>
 
-                Want Compliments?
-                <input type="radio" name="wants_compliments" value="yes" id="compliments_yes">
-                <label for="compliments_yes">Yes</label>
-                <input type="radio" name="wants_compliments" value="no" id="compliments_no">
-                <label for="compliments_yes">No</label>
-                <br><br>
+    Do you want compliments?
+    <input type="radio" name="wants_compliments" value="yes" id="yes_compliments"/>
+    <label for="yes_compliments">Yes</label>
+    <input type="radio" name="wants_compliments" value="no" id="no_compliments"/>
+    <label for="yes_compliments">No</label>
+    <br/><br/>
 
-                <label for="num_compliments">How many compliments?</label>
-                <input type="number" name="num_compliments" min="1" max="5">
-                <br><br>
+    <label for="num_compliments">How many compliments would you like?</label>
+    <input type="number" name="num_compliments" min="1" max="5" />
+    <br/><br />
 
-                <input type="submit" value="Get Compliments!!">
-            </fieldset>
-        </form>
-    </body>
-</html>
+    <input type="submit" value="Get Compliments!!" />
+  </fieldset>
+</form>
+
+{% endblock %}

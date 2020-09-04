@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-import random
+from random import sample
 
 app = Flask(__name__)
 
@@ -8,7 +8,6 @@ def sort_letters(message):
     and return the new string."""
     return ''.join(sorted(list(message)))
 
-
 @app.route('/')
 def homepage():
     """A homepage with handy links for your convenience."""
@@ -16,57 +15,80 @@ def homepage():
 
 @app.route('/froyo')
 def choose_froyo():
-    """Shows a form to collect the user's Fro-Yo order."""
-    pass
-
-@app.route('/froyo_results')
+     
+    return render_template('froyo_form.html')
+    
+@app.route("/froyo_results")
 def show_froyo_results():
-    """Shows the user what they ordered from the previous page."""
-    pass
-
+    """Show the user what they ordered from the previous page."""
+    context = {
+        "froyo_flavor" : request.args.get("flavor"),
+        "froyo_toppings" : request.args.get("toppings"),
+    }
+    return render_template("froyo_results.html", **context)
+    
 @app.route('/favorites')
 def favorites():
     """Shows the user a form to choose their favorite color, animal, and city."""
-    pass
+    return render_template("favorites_form.html")
 
-@app.route('/favorites_results')
+@app.route("/favorites_results")
 def favorites_results():
-    """Shows the user a nice message using their form results."""
-    pass
+    """Show the user a nice message using their form results."""
 
-@app.route('/secret_message')
+    context ={
+        "color": request.args.get("color"),
+        "animal": request.args.get("animal"),
+        "city": request.args.get("city"),
+    }
+    
+    return render_template("favorites_results.html", **context)
+
+@app.route("/secret_message")
 def secret_message():
-    """Shows the user a form to collect a secret message. Sends the result via
-    the POST method to keep it a secret!"""
-    pass
+    """Show the user a form to collect a secret message.
+    Send the result via the POST method to keep it a secret.
+    """
+    return render_template("secret_message.html")
 
-@app.route('/message_results', methods=['POST'])
+
+@app.route("/message_results", methods=["POST"])
 def message_results():
-    """Shows the user their message, with the letters in sorted order."""
-    pass
+    """Show the user their message, with the letters in sorted order."""
+
+    message = sort_letters(request.form.get("message"))
+    return render_template("message_results.html",message=message)
+
 
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
-    return """
-    <form action="/calculator_results" method="GET">
-        Please enter 2 numbers and select an operator.<br/><br/>
-        <input type="number" name="operand1">
-        <select name="operation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <input type="number" name="operand2">
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template("calculator_form.html")
 
-@app.route('/calculator_results')
+@app.route("/calculator_results")
 def calculator_results():
-    """Shows the user the result of their calculation."""
-    pass
+    """Show the user the result of their calculation."""
+    operation = request.args.get("operation")
+    operand_one = int(request.args.get("operand1"))
+    operand_two = int(request.args.get("operand2"))
+
+    if operation=="add":
+        result = operand_one+operand_two
+    elif operation=="subtract":
+        result = operand_one-operand_two
+    elif operation=="multiply":
+        result = operand_one*operand_two
+    elif operation=="divide":
+        result = operand_one/operand_two
+
+    context={
+        "operation": operation,
+        "operand_one": operand_one,
+        "operand_two": operand_two,
+        "result": result,
+    }
+
+    return render_template("calculator_results.html", **context)
 
 
 # List of compliments to be used in the `compliments_results` route (feel free 
@@ -95,7 +117,9 @@ list_of_compliments = [
     'super',
     'upbeat',
     'wondrous',
-    'zoetic'
+    'zoetic',
+    'amazing',
+    'epic'
 ]
 
 @app.route('/compliments')
@@ -103,15 +127,18 @@ def compliments():
     """Shows the user a form to get compliments."""
     return render_template('compliments_form.html')
 
-@app.route('/compliments_results')
+@app.route("/compliments_results")
 def compliments_results():
     """Show the user some compliments."""
-    context = {
-        # TODO: Enter your context variables here.
+    num_compliments = request.args.get("num_compliments")
+    get_compliments = sample(list_of_compliments, int(num_compliments))
+    context={
+        "name": request.args.get("users_name"),
+        "wants_compliments": request.args.get("wants_compliments"),
+        "get_compliments": get_compliments,
     }
 
-    return render_template('compliments_results.html', **context)
-
+    return render_template("compliments_results.html", **context)
 
 if __name__ == '__main__':
     app.run()

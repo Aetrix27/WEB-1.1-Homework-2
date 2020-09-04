@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Compliments Results</title>
-    </head>
-    <body>
-        <!-- Your HTML code goes here! -->
+{% extends "home.html" %}
+{% block content %}
 
-        
+<p>Hi {{ name }}!</p>
+{% if wants_compliments=="yes" %}
+  <ul>
+  {% for compliment in get_compliments %}
+    <li>{{ name }} you are {{ compliment }}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+  No compliments for you today.
+{% endif %}
 
-        
-        
-    </body>
-</html>
+{% endblock %}
